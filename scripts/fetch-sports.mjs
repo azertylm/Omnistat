@@ -352,6 +352,12 @@ async function syncNHL() {
 async function syncApiSports() {
   if (!API_SPORTS_KEY) return [];
   const records = [];
+  const apiErrors = [];
+  const noteErrors = (label, data) => {
+    const e = data?.errors;
+    const msg = Array.isArray(e) ? e.join('; ') : e && typeof e === 'object' ? Object.values(e).join('; ') : '';
+    if (msg) apiErrors.push(`${label}: ${msg}`);
+  };
   const headers = { 'x-apisports-key': API_SPORTS_KEY };
 
   const footballLeagues = [
@@ -366,6 +372,7 @@ async function syncApiSports() {
   for (const league of footballLeagues) {
     const url = `https://v3.football.api-sports.io/standings?league=${league.id}&season=${ACTIVE_SEASON_START}`;
     const data = await fetchJson(url, headers);
+    noteErrors(league.name, data);
     const groups = data?.response?.[0]?.league?.standings || [];
 
     for (const group of groups) {
@@ -423,6 +430,7 @@ async function syncApiSports() {
   try {
     const nbaUrl = `https://v1.basketball.api-sports.io/standings?league=12&season=${ACTIVE_SEASON_STR}`;
     const nbaData = await fetchJson(nbaUrl, headers);
+    noteErrors('NBA', nbaData);
     const nbaRows = (nbaData?.response || []).flat();
 
     for (const row of nbaRows) {
@@ -466,8 +474,12 @@ async function syncApiSports() {
     }
   } catch (err) {
     console.error('API-Sports NBA :', err.message);
+    apiErrors.push(`NBA: ${err.message}`);
   }
 
+  if (records.length === 0 && apiErrors.length > 0) {
+    throw new Error(apiErrors.slice(0, 3).join(' | '));
+  }
   return records;
 }
 
