@@ -1,0 +1,48 @@
+name: Sync Sports Stats (Nocturne)
+
+on:
+  schedule:
+    # Tous les jours à 03h30 UTC
+    - cron: '30 3 * * *'
+  workflow_dispatch:
+    inputs:
+      f1_years:
+        description: "Années F1 à synchroniser (ex: 2024,2025,2026)"
+        required: false
+        default: "2024,2025,2026"
+
+# Indispensable pour autoriser le bot à écrire le JSON sur le dépôt
+permissions:
+  contents: write
+
+jobs:
+  sync-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupération du dépôt
+        uses: actions/checkout@v4
+
+      - name: Installation de Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Collecte et normalisation des statistiques
+        env:
+          # Clé optionnelle : ajoutez-la dans Settings -> Secrets -> Actions
+          API_SPORTS_KEY: ${{ secrets.API_SPORTS_KEY }}
+          F1_YEARS: ${{ github.event.inputs.f1_years || '2024,2025,2026' }}
+        run: node scripts/fetch-sports.mjs
+
+      - name: Commit et push si les données ont changé
+        run: |
+          git config --local user.name "OmniStats Bot"
+          git config --local user.email "bot@omnistats.local"
+          git add data/stats-database.json
+          if git diff --staged --quiet; then
+            echo "Aucune nouvelle donnée à committer."
+          else
+            git commit -m "chore(data): mise à jour automatique des stats ($(date +'%Y-%m-%d'))"
+            git push
+          fi

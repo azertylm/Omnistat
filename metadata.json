@@ -1,0 +1,8 @@
+{
+  "name": "OmniStats",
+  "description": "Moteur analytique et classement historique dynamique multi-sports (1950-2026) pour clubs, franchises et nations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
