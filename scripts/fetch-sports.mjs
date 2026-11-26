@@ -351,6 +351,9 @@ async function syncNHL() {
 // ============================================================================
 async function syncApiSports() {
   if (!API_SPORTS_KEY) return [];
+  // Plan gratuit API-Sports : saisons 2022 à 2024 seulement (la plus récente est utilisée)
+  const API_SEASON = Math.min(ACTIVE_SEASON_START, 2024);
+  const API_SEASON_STR = `${API_SEASON}-${API_SEASON + 1}`;
   const records = [];
   const apiErrors = [];
   const noteErrors = (label, data) => {
@@ -370,7 +373,7 @@ async function syncApiSports() {
   ];
 
   for (const league of footballLeagues) {
-    const url = `https://v3.football.api-sports.io/standings?league=${league.id}&season=${ACTIVE_SEASON_START}`;
+    const url = `https://v3.football.api-sports.io/standings?league=${league.id}&season=${API_SEASON}`;
     const data = await fetchJson(url, headers);
     noteErrors(league.name, data);
     const groups = data?.response?.[0]?.league?.standings || [];
@@ -389,8 +392,8 @@ async function syncApiSports() {
         const entityId = `football_club_${slugify(teamName)}`;
 
         records.push({
-          id: `apisports_fb_${league.id}_${ACTIVE_SEASON_START}_${entityId}`,
-          year: ACTIVE_SEASON_START + 1,
+          id: `apisports_fb_${league.id}_${API_SEASON}_${entityId}`,
+          year: API_SEASON + 1,
           date: TODAY,
           sport: 'football',
           competition: league.name,
@@ -428,7 +431,7 @@ async function syncApiSports() {
 
   // NBA (API-Sports Basketball : API distincte avec son propre quota, 1 requête/nuit)
   try {
-    const nbaUrl = `https://v1.basketball.api-sports.io/standings?league=12&season=${ACTIVE_SEASON_STR}`;
+    const nbaUrl = `https://v1.basketball.api-sports.io/standings?league=12&season=${API_SEASON_STR}`;
     const nbaData = await fetchJson(nbaUrl, headers);
     noteErrors('NBA', nbaData);
     const nbaRows = (nbaData?.response || []).flat();
@@ -445,8 +448,8 @@ async function syncApiSports() {
       const entityId = `basketball_club_${slugify(teamName)}`;
 
       records.push({
-        id: `apisports_nba_12_${ACTIVE_SEASON_START}_${entityId}`,
-        year: ACTIVE_SEASON_START + 1,
+        id: `apisports_nba_12_${API_SEASON}_${entityId}`,
+        year: API_SEASON + 1,
         date: TODAY,
         sport: 'basketball',
         competition: 'NBA',
