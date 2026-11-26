@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "lastUpdated": "2026-11-26T07:41:01.694Z",
+  "lastUpdated": "2026-11-26T08:04:07.367Z",
   "activeSeason": "2026-2027",
   "totalRecords": 110,
   "sportsCovered": [
@@ -11,22 +11,22 @@
     "jolpica-f1": {
       "status": "ok",
       "fetchedCount": 78,
-      "updatedAt": "2026-11-26T07:40:56.777Z"
+      "updatedAt": "2026-11-26T08:03:58.579Z"
     },
     "thesportsdb": {
       "status": "error",
       "error": "HTTP 403 sur https://www.thesportsdb.com/api/v1/json/3/lookuptable.php?l=4328&s=2026-2027",
-      "updatedAt": "2026-11-26T07:41:01.401Z"
+      "updatedAt": "2026-11-26T08:04:03.183Z"
     },
     "nhl-api": {
       "status": "ok",
       "fetchedCount": 32,
-      "updatedAt": "2026-11-26T07:41:01.694Z"
+      "updatedAt": "2026-11-26T08:04:03.266Z"
     },
     "api-sports": {
       "status": "skipped",
       "fetchedCount": 0,
-      "updatedAt": "2026-11-26T07:41:01.694Z"
+      "updatedAt": "2026-11-26T08:04:07.367Z"
     }
   },
   "records": [
