@@ -419,6 +419,55 @@ async function syncApiSports() {
     await sleep(500);
   }
 
+  // NBA (API-Sports Basketball : API distincte avec son propre quota, 1 requête/nuit)
+  try {
+    const nbaUrl = `https://v1.basketball.api-sports.io/standings?league=12&season=${ACTIVE_SEASON_STR}`;
+    const nbaData = await fetchJson(nbaUrl, headers);
+    const nbaRows = (nbaData?.response || []).flat();
+
+    for (const row of nbaRows) {
+      const rank = Number(row.position) || 99;
+      const played = Number(row.games?.played) || 0;
+      const wins = Number(row.games?.win?.total) || 0;
+      const losses = Number(row.games?.lose?.total) || 0;
+      const pointsFor = Number(row.points?.for) || 0;
+      const pointsAgainst = Number(row.points?.against) || 0;
+      const winPct = played > 0 ? Number(((wins / played) * 100).toFixed(1)) : 0;
+      const teamName = row.team?.name || 'Unknown';
+      const entityId = `basketball_club_${slugify(teamName)}`;
+
+      records.push({
+        id: `apisports_nba_12_${ACTIVE_SEASON_START}_${entityId}`,
+        year: ACTIVE_SEASON_START + 1,
+        date: TODAY,
+        sport: 'basketball',
+        competition: 'NBA',
+        tier: 1,
+        entityId,
+        entityName: teamName,
+        entityType: 'club',
+        countryCode: 'USA',
+        rank,
+        wins,
+        draws: 0,
+        losses,
+        titles: rank === 1 ? 1 : 0,
+        finals: rank <= 2 ? 1 : 0,
+        podiums: rank <= 3 ? 1 : 0,
+        eloRating: estimateElo(winPct, rank, 1),
+        source: 'api-sports',
+        advancedStats: {
+          played,
+          winPct,
+          pointsDiff: pointsFor - pointsAgainst,
+          logo: row.team?.logo || null,
+        },
+      });
+    }
+  } catch (err) {
+    console.error('API-Sports NBA :', err.message);
+  }
+
   return records;
 }
 
