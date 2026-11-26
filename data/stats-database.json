@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "lastUpdated": "2026-11-26T08:04:07.367Z",
+  "lastUpdated": "2026-11-26T08:06:12.862Z",
   "activeSeason": "2026-2027",
   "totalRecords": 110,
   "sportsCovered": [
@@ -11,22 +11,22 @@
     "jolpica-f1": {
       "status": "ok",
       "fetchedCount": 78,
-      "updatedAt": "2026-11-26T08:03:58.579Z"
+      "updatedAt": "2026-11-26T08:06:02.955Z"
     },
     "thesportsdb": {
       "status": "error",
       "error": "HTTP 403 sur https://www.thesportsdb.com/api/v1/json/3/lookuptable.php?l=4328&s=2026-2027",
-      "updatedAt": "2026-11-26T08:04:03.183Z"
+      "updatedAt": "2026-11-26T08:06:07.571Z"
     },
     "nhl-api": {
       "status": "ok",
       "fetchedCount": 32,
-      "updatedAt": "2026-11-26T08:04:03.266Z"
+      "updatedAt": "2026-11-26T08:06:07.835Z"
     },
     "api-sports": {
-      "status": "skipped",
-      "fetchedCount": 0,
-      "updatedAt": "2026-11-26T08:04:07.367Z"
+      "status": "error",
+      "error": "UEFA Champions League: Free plans do not have access to this season, try from 2022 to 2024. | Premier League: Free plans do not have access to this season, try from 2022 to 2024. | Ligue 1: Free plans do not have access to this season, try from 2022 to 2024.",
+      "updatedAt": "2026-11-26T08:06:12.862Z"
     }
   },
   "records": [
